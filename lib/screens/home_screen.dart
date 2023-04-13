@@ -3,18 +3,29 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen();
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static const int twentyFiveMinite = 1500;
-  int totalSeconds = twentyFiveMinite;
+  int twentyFiveMinite = 1500;
+  int totalSeconds = 0;
+  int cycleMinites = 0;
+  int cycleSeconds = 0;
+
   late Timer timer;
+
   bool isRunning = false;
+
   int totalPomodoros = 0;
+
+  _HomeScreenState() {
+    totalSeconds = twentyFiveMinite;
+    cycleMinites = totalSeconds ~/ 60;
+    cycleSeconds = totalSeconds % 60;
+  }
 
   void onTick(Timer timer) {
     if (totalSeconds == 0) {
@@ -22,6 +33,8 @@ class _HomeScreenState extends State<HomeScreen> {
         totalPomodoros = totalPomodoros + 1;
         isRunning = false;
         totalSeconds = twentyFiveMinite;
+        cycleMinites = totalSeconds ~/ 60;
+        cycleSeconds = totalSeconds % 60;
       });
       timer.cancel();
     } else {
@@ -61,21 +74,71 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Column(
         children: [
-          Flexible(
-            flex: 1,
-            child: Container(
-              alignment: Alignment.bottomCenter,
-              child: Text(
-                format(totalSeconds),
-                style: TextStyle(
-                    color: Theme.of(context).cardColor,
-                    fontSize: 89,
-                    fontWeight: FontWeight.w600),
-              ),
+          const SizedBox(
+            height: 50,
+          ),
+          Container(
+            alignment: Alignment.topLeft,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
             ),
+            child: Text(
+              "POMOTIMER",
+              style: TextStyle(
+                  color: Theme.of(context).cardColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600),
+            ),
+          ),
+          const SizedBox(
+            height: 70,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Flexible(
+                flex: 2,
+                child: Container(
+                  alignment: Alignment.bottomRight,
+                  child: Text(
+                    cycleMinites.toString(),
+                    style: TextStyle(
+                        color: Theme.of(context).cardColor,
+                        fontSize: 89,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+              Flexible(
+                flex: 1,
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    ":",
+                    style: TextStyle(
+                        color: Theme.of(context).cardColor,
+                        fontSize: 89,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+              Flexible(
+                flex: 2,
+                child: Container(
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    cycleSeconds.toString().padLeft(2, '0'),
+                    style: TextStyle(
+                        color: Theme.of(context).cardColor,
+                        fontSize: 89,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+            ],
           ),
           Flexible(
               flex: 3,
@@ -117,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fontWeight: FontWeight.w600,
                                 color: Theme.of(context)
                                     .textTheme
-                                    .headline1!
+                                    .displayLarge!
                                     .color),
                           ),
                           Text(
@@ -127,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fontWeight: FontWeight.w600,
                                 color: Theme.of(context)
                                     .textTheme
-                                    .headline1!
+                                    .displayLarge!
                                     .color),
                           ),
                         ]),
